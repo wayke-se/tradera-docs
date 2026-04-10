@@ -1,5 +1,5 @@
 # Tradera-docs
-This repo servers as a source of information for Tradera on how to integrate with Wayke.
+This repo serves as a source of information for Tradera on how to integrate with Wayke.
 
 ## Documentation
 

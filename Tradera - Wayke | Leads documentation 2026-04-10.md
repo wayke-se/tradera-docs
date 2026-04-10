@@ -1,11 +1,11 @@
 
 # Tradera - Wayke | Leads documentation
-Tradera will be given two API keys pointing towards the production and test environments respecivly. When doing an API call, one of these must be set as a key inside the header value `x-api-key` 
+Tradera will be given two API keys pointing towards the production and test environments respectively. When doing an API call, one of these must be set as a key inside the header value `x-api-key` 
 to authenticate the request.
 
-The functionallity described in this document pretains towards generating a phone number for a specified vehicle and creating a dedicated lead for a dealer.
+The functionality described in this document pertains towards generating a phone number for a specified vehicle and creating a dedicated lead for a dealer.
 
-## Generationg a phone number for use on a vehicle
+## Generating a phone number for use on a vehicle
 When the user wants to phone the dealer for a vehicle a corresponding number has to be generated. This is done through a GraphQL request at the endpoint `https://test-api.wayke.com/graphql`
 
 ### Example GraphQL Request
