@@ -1,0 +1,5 @@
+#Leads documentation
+Tradera will be given two sets of api keys pointing towards the production and test environments. When doing an API call, one of these must be set inside the header as a value `x-api-key`  
+
+
+## Generationg a phone number for use on a vehicle
