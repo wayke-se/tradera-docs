@@ -4,4 +4,4 @@ This repo serves as a source of information for Tradera on how to integrate with
 ## Documentation
 
 - [Leads documentation](Tradera%20-%20Wayke%20%7C%20Leads%20documentation%202026-04-10.md)
-- Kafka documentation - coming next week
+- [Kafka event contract](kafka.md)
