@@ -57,7 +57,19 @@ Requires the `x-api-key` header to be set to an API key on the HTTP request.
         {
             "key": "sourceMechanism",
             "value": "cta.email"
-        }
+        },
+        {
+            "key": "readingUnit",
+            "value": "ScandinavianMile"
+        },
+        {
+            "key": "registrationNumber",
+            "value": "ONP33D"
+        },
+        {
+            "key": "tradeInCarMileage",
+            "value": "6500"
+        },
     ]
 }
 ```
