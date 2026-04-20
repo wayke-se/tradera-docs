@@ -7,9 +7,7 @@ Wayke exposes an HTTP ingress for browser-side analytics events. Tradera's consu
 | Environment | Market | URL                                      |
 |-------------|--------|------------------------------------------|
 | Production  | SE     | `https://analytics.wayke.se/`            |
-| Production  | NO     | `https://analytics.drive.no/`            |
 | Test        | SE     | `https://test-analytics.wayketech.se/`   |
-| Test        | NO     | `https://drive-analytics.wayketech.se/`  |
 
 Use the SE endpoint for Swedish inventory and the NO endpoint for Norwegian inventory.
 
@@ -59,7 +57,6 @@ Events are routed into three delivery buckets based on `eventType`. Bucket affec
 - `conversion`
 - `hasRegistered`
 - `subscribed`
-- Assignment lifecycle: `assignmentInitiated`, `assignmentResume`, `assignmentPreview`, `assignmentCompleted`, `assignmentRemove`, `assignmentSaveDraft`, `assignmentLoadDraft`, `assignmentUpdateDraft`
 - Any custom `eventType` not recognised by the pipeline
 
 **Deferred — interaction**:
