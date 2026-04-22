@@ -62,7 +62,7 @@ Emitted once when a branch activates the Tradera integration. Provides the branc
 | `display_name`        | string   | no       | Human-readable name of the branch                        |
 | `legal_name`          | string   | no       | Registered legal name of the dealership                  |
 | `organization_number` | string   | no       | Swedish organisation number                              |
-| `market`              | string   | no       | Market code: `SE`, `NO`, or `FI`                         |
+| `market`              | string   | yes      | Market code: `SE`, `NO`, or `FI`                         |
 | `telephone`           | string   | no       | Main telephone number                                    |
 | `email`               | string   | no       | Main contact email address                               |
 | `home_page`           | string   | no       | URL to the branch's website                              |
