@@ -24,19 +24,80 @@ Every message is a CloudEvents envelope:
 
 ### `wayke.ads.channels.tradera.branch.updated`
 
-Emitted once when a branch activates the Tradera integration. Provides the branch identity so Tradera can bootstrap its dealer mapping.
+Emitted once when a branch activates the Tradera integration. Provides the branch identity and dealer profile so Tradera can bootstrap its dealer mapping.
 
 ```json
 {
   "branch_id": "61fcbe56-2a07-4fd9-8850-02b070a1470c",
-  "display_name": "Wayke Stockholm"
+  "display_name": "Wayke Stockholm",
+  "legal_name": "Wayke Sverige AB",
+  "organization_number": "556123-4567",
+  "market": "SE",
+  "telephone": "+46 8 123 45 67",
+  "email": "stockholm@wayke.se",
+  "home_page": "https://wayke.se/stockholm",
+  "logo": "https://img.wayke.se/branches/61fcbe56/logo.png",
+  "description": "Auktoriserad Volvo- och Polestar-handlare i centrala Stockholm.",
+  "address": {
+    "street": "Sveavägen 100",
+    "zip": "113 50",
+    "city": "Stockholm",
+    "county": "Stockholm",
+    "latitude": 59.3426,
+    "longitude": 18.0579
+  },
+  "opening_hours": [
+    { "day_of_week": "MONDAY",   "open_from": "09:00", "open_to": "18:00" },
+    { "day_of_week": "TUESDAY",  "open_from": "09:00", "open_to": "18:00" },
+    { "day_of_week": "SATURDAY", "open_from": "10:00", "open_to": "15:00" }
+  ],
+  "is_mrf_dealer": true,
+  "reseller_for": ["Volvo", "Polestar"]
 }
 ```
 
-| Field          | Type   | Required | Description                      |
-|----------------|--------|----------|----------------------------------|
-| `branch_id`    | string | yes      | UUID of the Wayke branch         |
-| `display_name` | string | no       | Human-readable name of the branch |
+| Field                 | Type     | Required | Description                                              |
+|-----------------------|----------|----------|----------------------------------------------------------|
+| `branch_id`           | string   | yes      | UUID of the Wayke branch                                 |
+| `display_name`        | string   | no       | Human-readable name of the branch                        |
+| `legal_name`          | string   | no       | Registered legal name of the dealership                  |
+| `organization_number` | string   | no       | Swedish organisation number                              |
+| `market`              | string   | yes      | Market code: `SE`, `NO`, or `FI`                         |
+| `telephone`           | string   | no       | Main telephone number                                    |
+| `email`               | string   | no       | Main contact email address                               |
+| `home_page`           | string   | no       | URL to the branch's website                              |
+| `logo`                | string   | no       | URL to the branch logo image                             |
+| `description`         | string   | no       | Free-text description of the branch                      |
+| `address`             | object   | no       | Physical address of the branch (see below)               |
+| `opening_hours`       | object[] | no       | Weekly opening hours entries (see below)                 |
+| `is_mrf_dealer`       | bool     | no       | Whether the branch is an MRF-certified dealer            |
+| `reseller_for`        | string[] | no       | Brands the branch is an authorised reseller for          |
+
+#### `address`
+
+| Field       | Type   | Required | Description                              |
+|-------------|--------|----------|------------------------------------------|
+| `street`    | string | no       | Street name and number                   |
+| `zip`       | string | no       | Postal code                              |
+| `city`      | string | no       | City name                                |
+| `county`    | string | no       | County or region name                    |
+| `latitude`  | float  | no       | Geographic latitude (WGS 84)             |
+| `longitude` | float  | no       | Geographic longitude (WGS 84)            |
+
+#### `opening_hours[]`
+
+| Field        | Type   | Required | Description                                                              |
+|--------------|--------|----------|--------------------------------------------------------------------------|
+| `day_of_week`| string | yes      | Day of the week: `MONDAY`, `TUESDAY`, `WEDNESDAY`, `THURSDAY`, `FRIDAY`, `SATURDAY`, or `SUNDAY` |
+| `open_from`  | string | no       | Opening time in `HH:MM` format (24-hour). Omitted when the branch is closed that day. |
+| `open_to`    | string | no       | Closing time in `HH:MM` format (24-hour). Omitted when the branch is closed that day. |
+
+**Conventions:**
+
+- All field names use snake_case, consistent with the rest of this contract.
+- `address`, `opening_hours`, and `reseller_for` are omitted entirely from the payload when empty — Tradera should treat a missing block as "no data" rather than an empty collection.
+- `market` is one of `SE` | `NO` | `FI`. Today only SE branches flow through Tradera, but the enum is defined for future expansion.
+- `day_of_week` is one of `MONDAY` | `TUESDAY` | `WEDNESDAY` | `THURSDAY` | `FRIDAY` | `SATURDAY` | `SUNDAY`.
 
 ### `wayke.ads.channels.tradera.ad.updated`
 
