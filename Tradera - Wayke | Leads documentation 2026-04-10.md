@@ -44,6 +44,7 @@ Requires the `x-api-key` header to be set to an API key on the HTTP request.
     "firstName": "Martin",
     "lastName": "Bergqlin",
     "email": "martin@ourstudio.se",
+    "phoneNumber": "+46423424434",
     "type": "registrationOfInterestToBuy",
     "metadata": [
         {
