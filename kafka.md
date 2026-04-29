@@ -59,30 +59,34 @@ Emitted once when a branch activates the Tradera integration. Provides the branc
 | Field                 | Type     | Required | Description                                              |
 |-----------------------|----------|----------|----------------------------------------------------------|
 | `branch_id`           | string   | yes      | UUID of the Wayke branch                                 |
-| `display_name`        | string   | no       | Human-readable name of the branch                        |
+| `display_name`        | string   | yes¹     | Human-readable name of the branch                        |
 | `legal_name`          | string   | no       | Registered legal name of the dealership                  |
-| `organization_number` | string   | no       | Swedish organisation number                              |
+| `organization_number` | string   | yes¹     | Swedish organisation number                              |
 | `market`              | string   | yes      | Market code: `SE`, `NO`, or `FI`                         |
-| `telephone`           | string   | no       | Main telephone number                                    |
-| `email`               | string   | no       | Main contact email address                               |
+| `telephone`           | string   | yes¹     | Main telephone number                                    |
+| `email`               | string   | yes¹     | Main contact email address                               |
 | `home_page`           | string   | no       | URL to the branch's website                              |
 | `logo`                | string   | no       | URL to the branch logo image                             |
 | `description`         | string   | no       | Free-text description of the branch                      |
-| `address`             | object   | no       | Physical address of the branch (see below)               |
+| `address`             | object   | yes¹     | Physical address of the branch (see below)               |
 | `opening_hours`       | object[] | no       | Weekly opening hours entries (see below)                 |
 | `is_mrf_dealer`       | bool     | no       | Whether the branch is an MRF-certified dealer            |
 | `reseller_for`        | string[] | no       | Brands the branch is an authorised reseller for          |
+
+¹ Enforced by Wayke at activation time — see [Branch activation prerequisites](#branch-activation-prerequisites) below.
 
 #### `address`
 
 | Field       | Type   | Required | Description                              |
 |-------------|--------|----------|------------------------------------------|
-| `street`    | string | no       | Street name and number                   |
-| `zip`       | string | no       | Postal code                              |
-| `city`      | string | no       | City name                                |
+| `street`    | string | yes¹     | Street name and number                   |
+| `zip`       | string | yes¹     | Postal code                              |
+| `city`      | string | yes¹     | City name                                |
 | `county`    | string | no       | County or region name                    |
 | `latitude`  | float  | no       | Geographic latitude (WGS 84)             |
 | `longitude` | float  | no       | Geographic longitude (WGS 84)            |
+
+¹ Enforced by Wayke at activation time — see [Branch activation prerequisites](#branch-activation-prerequisites) below.
 
 #### `opening_hours[]`
 
@@ -98,6 +102,24 @@ Emitted once when a branch activates the Tradera integration. Provides the branc
 - `address`, `opening_hours`, and `reseller_for` are omitted entirely from the payload when empty — Tradera should treat a missing block as "no data" rather than an empty collection.
 - `market` is one of `SE` | `NO` | `FI`. Today only SE branches flow through Tradera, but the enum is defined for future expansion.
 - `day_of_week` is one of `MONDAY` | `TUESDAY` | `WEDNESDAY` | `THURSDAY` | `FRIDAY` | `SATURDAY` | `SUNDAY`.
+
+#### Branch activation prerequisites
+
+Wayke refuses to activate the Tradera integration for a branch until the following fields are populated in the branch's organization profile. Every `branch.updated` event Tradera receives is therefore guaranteed to carry non-empty values for these fields:
+
+| Field                 | Notes                                                                |
+|-----------------------|----------------------------------------------------------------------|
+| `display_name`        | dealer name shown to buyers                                          |
+| `organization_number` | Swedish organisation number                                          |
+| `telephone`           | main telephone number                                                |
+| `email`               | main contact email                                                   |
+| `address.street`      | the `address` block is always present, with these three sub-fields populated |
+| `address.zip`         |                                                                      |
+| `address.city`        |                                                                      |
+
+All other fields listed in the schema (`legal_name`, `home_page`, `logo`, `description`, `address.county`, `address.latitude`, `address.longitude`, `opening_hours`, `is_mrf_dealer`, `reseller_for`) remain optional and may be absent or empty.
+
+If any of the prerequisite fields are missing when a dealer attempts to enable Tradera in Wayke, the operator gets an error listing exactly which fields need to be populated; no events flow to Tradera until the data is corrected.
 
 ### `wayke.ads.channels.tradera.ad.updated`
 
