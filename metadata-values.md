@@ -19,6 +19,10 @@ JSON field names as they appear on the Tradera Kafka contract:
 | `color` | closed set, see below |
 | `equipments` | array of free-text strings |
 | `registration_number`, `vin`, `mileage_km` | direct |
+| `brandSpecific.model` | free text, OEM model grouping |
+| `brandSpecific.variant` | free text, OEM variant grouping |
+| `brandSpecific.badge` | free text, OEM sales badge |
+| `brandSpecific.terms` | array of free-text strings (drivetrain / body / trim tags) |
 
 ## chassis_type
 
@@ -106,3 +110,23 @@ Format templates applied:
 | automatic | `{gears}-stegad {value}` |
 | manual | `{gears}-växlad {value}` |
 | default | `{value}` |
+
+## brandSpecific
+
+Brand-curated taxonomy nested inside `car_fields.brandSpecific`. Sourced from the federated `Vehicle.brandSpecific` block in item-enrichment-service. The whole object is omitted when the vehicle has no brand-specific data; individual fields are omitted when empty.
+
+```json
+"brandSpecific": {
+  "model": "A4",
+  "variant": "40",
+  "badge": "40 TDI quattro 2.0",
+  "terms": ["quattro", "Avant"]
+}
+```
+
+| Field     | Type     | Description                                                                       |
+|-----------|----------|-----------------------------------------------------------------------------------|
+| `model`   | string   | OEM model grouping (e.g. `"A4"`, `"5-Serie"`, `"XC60"`)                           |
+| `variant` | string   | OEM variant under the model (e.g. `"40"`, `"540"`)                                |
+| `badge`   | string   | Specific sales badge / configuration (e.g. `"40 TDI quattro 2.0"`)                |
+| `terms`   | string[] | Free-form taxonomy terms — drivetrain, body, trim, etc. (e.g. `["quattro", "Avant"]`) |

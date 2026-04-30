@@ -150,7 +150,13 @@ Emitted whenever a vehicle ad is published, updated, or unpublished. This is the
     "engineBaseType": "Hybrid",
     "transmission": "Automat",
     "color": "Svart",
-    "equipments": ["Navigation", "Dragkrok", "Panoramatak"]
+    "equipments": ["Navigation", "Dragkrok", "Panoramatak"],
+    "brandSpecific": {
+      "model": "XC60",
+      "variant": "T6",
+      "badge": "T6 AWD Inscription",
+      "terms": ["AWD", "Inscription"]
+    }
   }
 }
 ```
@@ -183,6 +189,29 @@ Emitted whenever a vehicle ad is published, updated, or unpublished. This is the
 | `transmission`        | string   | no       | Transmission type (e.g. Automat, Manuell)        |
 | `color`               | string   | no       | Exterior color                                   |
 | `equipments`          | string[] | no       | List of equipment / features                     |
+| `brandSpecific`       | object   | no       | OEM-curated taxonomy (see below)                 |
+
+##### `brandSpecific`
+
+Brand-curated values used to group listings under the right OEM model/variant page on Tradera. The block is omitted entirely when the federated vehicle has no brand-specific data; individual fields are omitted when empty.
+
+```json
+"brandSpecific": {
+  "model": "A4",
+  "variant": "40",
+  "badge": "40 TDI quattro 2.0",
+  "terms": ["quattro", "Avant"]
+}
+```
+
+| Field     | Type     | Required | Description                                                                |
+|-----------|----------|----------|----------------------------------------------------------------------------|
+| `model`   | string   | no       | Brand-curated model name (e.g. `"A4"`, `"5-Serie"`, `"XC60"`)              |
+| `variant` | string   | no       | Brand-curated variant grouping under the model (e.g. `"40"`, `"540"`)      |
+| `badge`   | string   | no       | Specific sales badge / configuration (e.g. `"40 TDI quattro 2.0"`)         |
+| `terms`   | string[] | no       | Free-form taxonomy terms (drivetrain, body, trim, etc., e.g. `["quattro", "Avant"]`) |
+
+> Field names use camelCase (`brandSpecific`) to match the agreed contract — same exception `engineBaseType` already makes; the rest of `car_fields` is snake_case.
 
 ## Lifecycle
 
@@ -196,4 +225,4 @@ When a branch deactivates the Tradera integration, one `ad.updated` event with `
 
 - All events for a given branch share the same partition key (`subject: branchId`), guaranteeing strict per-branch ordering.
 - The `price_sek` field is a decimal string to avoid floating-point precision issues.
-- The `engineBaseType` field uses camelCase per the agreed contract; all other fields use snake_case.
+- The `engineBaseType` and `brandSpecific` fields use camelCase per the agreed contract; all other fields use snake_case.
