@@ -6,10 +6,17 @@ to authenticate the request.
 The functionality described in this document pertains towards generating a phone number for a specified vehicle and creating a dedicated lead for a dealer.
 
 ## Generating a phone number for use on a vehicle
-When the user wants to phone the dealer for a vehicle a corresponding number has to be generated. This is done through a GraphQL request at the endpoint `https://test-api.wayke.com/graphql`
+When the user wants to phone the dealer for a vehicle a corresponding number has to be generated. This is done through a GraphQL request at the public GraphQL endpoint:
+
+| Environment | Endpoint |
+|---|---|
+| Test | `https://public-test-api.wayke.com/graphql` |
+| Production | `https://public-api.wayke.com/graphql` |
+
+The public endpoint is dedicated to API-key integrations and exposes exactly the parts of the schema an API key can use, so schema introspection (GraphiQL, Altair, codegen) shows only what is available to you. The previous endpoint `https://test-api.wayke.com/graphql` / `https://api.wayke.com/graphql` is being reserved for token-based (OAuth) clients; please switch to the public endpoint.
 
 ### Example GraphQL Request
-Endpoint: `https://test-api.wayke.com/graphql`
+Endpoint: `https://public-test-api.wayke.com/graphql` (production: `https://public-api.wayke.com/graphql`)
 
 Requires the `x-api-key` header to be set to an API key on the HTTP request.
 
