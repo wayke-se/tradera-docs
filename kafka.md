@@ -156,7 +156,42 @@ Emitted whenever a vehicle ad is published, updated, or unpublished. This is the
       "variant": "T6",
       "badge": "T6 AWD Inscription",
       "terms": ["AWD", "Inscription"]
-    }
+    },
+    "registration_date": "2021-03-12",
+    "drivetrain": "Fyrhjulsdrift",
+    "engine_power_hp": 340,
+    "engine_torque_nm": 400,
+    "engine_displacement_cc": 1969,
+    "engine_displacement_litres": 2.0,
+    "number_of_gears": 8,
+    "acceleration_0_100_s": 5.9,
+    "fuel_consumption_combined_l_100km": 2.1,
+    "fuel_consumption_standard": "WLTP",
+    "co2_combined_g_km": 48,
+    "co2_standard": "WLTP",
+    "euro_class": "Euro 6",
+    "energy_class": "A",
+    "electric_vehicle_type": "Laddhybrid",
+    "battery_capacity_gross_kwh": 11.6,
+    "battery_capacity_net_kwh": 9.1,
+    "electricity_consumption_combined_kwh_100km": 18.2,
+    "electric_range_km": 53,
+    "length_mm": 4708,
+    "width_mm": 1902,
+    "height_mm": 1658,
+    "seats": 5,
+    "doors": 5,
+    "segment": "Mellanstor SUV",
+    "trunk_volume_rear_l": 468,
+    "curb_weight_kg": 2131,
+    "max_load_kg": 529,
+    "max_trailer_weight_braked_kg": 2250,
+    "euro_ncap_rating": 5,
+    "euro_ncap_test_year": 2017,
+    "number_of_owners": 2,
+    "imported": false,
+    "annual_tax_sek": 360,
+    "manufacturer_warranty_years": 2
   }
 }
 ```
@@ -212,6 +247,104 @@ Brand-curated values used to group listings under the right OEM model/variant pa
 | `terms`   | string[] | no       | Free-form taxonomy terms (drivetrain, body, trim, etc., e.g. `["quattro", "Avant"]`) |
 
 > Field names use camelCase (`brandSpecific`) to match the agreed contract — same exception `engineBaseType` already makes; the rest of `car_fields` is snake_case.
+
+##### Extended vehicle specification
+
+All fields below live directly on `car_fields`, next to the existing ones. Every field is optional and is omitted when Wayke has no value for the vehicle; a missing field means "unknown", never zero or false.
+
+**Motor och prestanda / Engine and performance**
+
+| Field                        | Type    | Required | Description                                                                 |
+|------------------------------|---------|----------|-----------------------------------------------------------------------------|
+| `registration_date`          | string  | no       | Date of first registration, `yyyy-MM-dd`                                    |
+| `drivetrain`                 | string  | no       | `Framhjulsdrift`, `Bakhjulsdrift` or `Fyrhjulsdrift`                        |
+| `engine_power_hp`            | int32   | no       | Engine power in hk (metric horsepower). Total system output for hybrids and EVs |
+| `engine_torque_nm`           | int32   | no       | Torque in Nm. Total system torque for hybrids and EVs                       |
+| `engine_displacement_cc`     | int32   | no       | Exact displacement in cm³, e.g. `1969`. Omitted for pure EVs               |
+| `engine_displacement_litres` | float   | no       | Nominal marketing displacement in litres, e.g. `2.0`. Omitted for pure EVs |
+| `number_of_gears`            | int32   | no       | Number of forward gears. Usually absent for pure EVs                        |
+| `acceleration_0_100_s`       | float   | no       | 0–100 km/h in seconds, e.g. `5.9`                                           |
+
+**Förbrukning och miljö / Consumption and environment**
+
+| Field                               | Type   | Required | Description                                                                                  |
+|-------------------------------------|--------|----------|----------------------------------------------------------------------------------------------|
+| `fuel_consumption_combined_l_100km` | float  | no       | Combined fuel consumption in l/100 km. Omitted for pure EVs                                  |
+| `fuel_consumption_standard`         | string | no       | `WLTP` or `NEDC`: the test cycle `fuel_consumption_combined_l_100km` was measured under. Present exactly when that field is |
+| `co2_combined_g_km`                 | int32  | no       | Combined CO₂ emissions in g/km                                                               |
+| `co2_standard`                      | string | no       | `WLTP` or `NEDC`: the test cycle `co2_combined_g_km` was measured under. Present exactly when that field is |
+| `euro_class`                        | string | no       | Euro emission standard as registered, e.g. `"Euro 6"`                                       |
+| `energy_class`                      | string | no       | Class letter `A`–`G`                                                                          |
+
+WLTP is preferred; NEDC is used only when no WLTP figure exists for the vehicle (typically vehicles registered before 2018). The `*_standard` companion says which one applies.
+
+**El och laddhybrid / Electric and plug-in hybrid**
+
+| Field                                        | Type   | Required | Description                                                                    |
+|----------------------------------------------|--------|----------|--------------------------------------------------------------------------------|
+| `electric_vehicle_type`                      | string | no       | `Elbil` (BEV), `Laddhybrid` (PHEV), `Range Extender (REX)` or `Hybrid` (non-plug-in). Omitted for pure combustion vehicles and mild hybrids |
+| `battery_capacity_gross_kwh`                 | float  | no       | Gross battery capacity in kWh                                                  |
+| `battery_capacity_net_kwh`                   | float  | no       | Net / usable battery capacity in kWh                                           |
+| `electricity_consumption_combined_kwh_100km` | float  | no       | Combined electricity consumption in kWh/100 km (WLTP)                          |
+| `electric_range_km`                          | int32  | no       | Electric range in km (WLTP)                                                    |
+
+The four battery/range/consumption fields are emitted for chargeable vehicles only (`electric_vehicle_type` = `Elbil`, `Laddhybrid` or `Range Extender (REX)`). A non-plug-in hybrid has no WLTP electric range and its small buffer battery is not comparable with a traction battery, so these fields are omitted for it.
+
+**Mått och utrymme / Dimensions and space**
+
+| Field                 | Type   | Required | Description                                                                              |
+|-----------------------|--------|----------|------------------------------------------------------------------------------------------|
+| `length_mm`           | int32  | no       | Overall length in mm                                                                     |
+| `width_mm`            | int32  | no       | Overall width in mm                                                                      |
+| `height_mm`           | int32  | no       | Overall height in mm                                                                     |
+| `seats`               | int32  | no       | Number of seats                                                                          |
+| `doors`               | int32  | no       | Number of doors                                                                          |
+| `segment`             | string | no       | Size class / segment, free text, e.g. `"Stor SUV"`. Closed set, see [metadata values](metadata-values.md#segment) |
+| `trunk_volume_rear_l` | int32  | no       | Rear luggage compartment in litres                                                       |
+| `trunk_volume_front_l`| int32  | no       | Front luggage compartment ("frunk") in litres. Only present for vehicles that have one   |
+
+**Vikter / Weights**
+
+| Field                          | Type  | Required | Description                                                                 |
+|--------------------------------|-------|----------|-----------------------------------------------------------------------------|
+| `curb_weight_kg`               | int32 | no       | Registered curb weight (tjänstevikt) in kg                                  |
+| `max_load_kg`                  | int32 | no       | Registered maximum load (maxlast) in kg                                     |
+| `max_trailer_weight_braked_kg` | int32 | no       | Maximum braked trailer weight in kg, the registered figure at 12 % incline  |
+
+**Säkerhet / Safety**
+
+| Field                 | Type  | Required | Description                                                  |
+|-----------------------|-------|----------|--------------------------------------------------------------|
+| `euro_ncap_rating`    | int32 | no       | Euro NCAP overall rating, `1`–`5` stars                      |
+| `euro_ncap_test_year` | int32 | no       | Year of the Euro NCAP test the rating comes from             |
+
+**Administrativt / Administrative**
+
+| Field              | Type  | Required | Description                                                                                             |
+|--------------------|-------|----------|---------------------------------------------------------------------------------------------------------|
+| `number_of_owners` | int32 | no       | Number of registered owners in the Swedish registry, including the current one                          |
+| `imported`         | bool  | no       | Whether the vehicle was imported to Sweden as a used vehicle                                            |
+| `annual_tax_sek`   | int32 | no       | Annual vehicle tax in SEK                                                                               |
+
+**Garanti / Warranty**
+
+| Field                         | Type  | Required | Description                                                                                       |
+|-------------------------------|-------|----------|---------------------------------------------------------------------------------------------------|
+| `manufacturer_warranty_years` | int32 | no       | Length in years of the manufacturer's new-car warranty for this model. Not adjusted for the vehicle's age |
+
+**Rules that apply to every field above**
+
+- A numeric field is omitted when its value would be zero and zero is not meaningful. `co2_combined_g_km` keeps zero, since 0 g/km is the real figure for an electric vehicle.
+- Every field carries exactly one value; a text field is never a list or a joined string.
+- Units are fixed by the field name.
+- Strings such as `drivetrain`, `euro_class`, `energy_class` and `segment` are Swedish. The possible values are listed in [metadata values](metadata-values.md).
+
+##### Not available
+
+| Field                      | Note                                                                                         |
+|----------------------------|----------------------------------------------------------------------------------------------|
+| Max laddeffekt DC (kW)     | Not available in Wayke's vehicle data. Can be added if a data source is agreed later.        |
+| I trafik (ja/nej)          | Not sent. The registration status Wayke holds is not current enough at listing time. Can be added when a live registry source is in place. |
 
 ## Lifecycle
 
